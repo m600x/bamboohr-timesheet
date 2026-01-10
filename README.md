@@ -1,4 +1,4 @@
-# BambooHR Time and Attendance automation (Docker X Puppeteer)
+# BambooHR Time and Attendance automation
 
 Automates BambooHR login and timesheet clock-in/out via Puppeteer.
 
@@ -20,10 +20,10 @@ docker-compose up
 
 #### Run with environment variables
 ```bash
-export LOGIN_USER=email@example.com
-export LOGIN_PASS=password
-export LOGIN_INSTANCE=your-company
-export TOTP_SECRET=JBSWY3DPEHPK3PXP
+export LOGIN_USER=your_email
+export LOGIN_PASS=your_password
+export LOGIN_INSTANCE=your_company
+export TOTP_SECRET=your_totp_token
 npm install
 npm test
 ```
@@ -77,4 +77,4 @@ If you already use an authenticator app, you can extract the secret from the QR 
 ```
 otpauth://totp/BambooHR:email@example.com?secret=JBSWY3DPEHPK3PXP&issuer=BambooHR
 ```
-Extract the value after `secret=`.
+Extract the value after `secret=`. (The secret is obviously not mine...)
