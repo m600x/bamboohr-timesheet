@@ -1,0 +1,12 @@
+{
+  "name": "bamboohr-timesheet",
+  "version": "1.0.0",
+  "description": "Puppeteer to clock in/out on BambooHR",
+  "main": "index.js",
+  "keywords": ["puppeteer", "time", "attendance", "bamboohr"],
+  "author": "M600",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^21.0.0"
+  }
+}
