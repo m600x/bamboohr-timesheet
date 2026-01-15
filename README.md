@@ -1,80 +1,148 @@
-# BambooHR Time and Attendance automation
+# BambooHR Time and Attendance Automation
 
-Automates BambooHR login and timesheet clock-in/out via Puppeteer.
+Automates BambooHR login and timesheet clock-in/out via Puppeteer and Express.
 
-Useful when the [API](https://documentation.bamboohr.com/reference/add-timesheet-clock-in-entry) is not working even in basic auth and you don't have an API key either.
+## Quick Start
 
-## Usage
-
-### With Docker
-
+### Docker
 
 ```bash
-cp .env.example .env
-# Edit the .env with your infos
-
-docker-compose up
+docker-compose up -d
 ```
 
-### Native npm
+### NPM
 
-#### Run with environment variables
 ```bash
-export LOGIN_USER=your_email
-export LOGIN_PASS=your_password
-export LOGIN_INSTANCE=your_company
-export TOTP_SECRET=your_totp_token
 npm install
-npm test
+node api-server.js
 ```
 
 ## Project Structure
 
 ```
 bamboohr/
-├── index.js           # Main Puppeteer automation script
-├── package.json       # Node.js dependencies and scripts
+├── api-server.js      # Express API server
+├── automation.js      # Puppeteer automation logic
+├── utils.js           # Shared utilities
+├── package.json       # Node.js dependencies
 ├── Dockerfile         # Docker configuration
 ├── docker-compose.yml # Docker Compose configuration
 └── README.md          # This file
 ```
 
-## Requirements
+## API Server
 
-- Node.js 18+ (if launching natively)
-- Docker & Docker Compose (if using the docker container)
+### Endpoints
 
-## Environment Variables
+```bash
+# Clock in
+curl -X POST http://localhost:3000/automation \
+  -H "Content-Type: application/json" \
+  -H "X-Request-Id: my-trace-id" \
+  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"SECRET","action":"in"}'
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `LOGIN_USER` | Yes | BambooHR email address |
-| `LOGIN_PASS` | Yes | BambooHR password |
-| `LOGIN_INSTANCE` | Yes | BambooHR instance name (e.g., `umbrella` for `https://umbrella.bamboohr.com`) |
-| `TOTP_SECRET` | Yes | TOTP secret key |
-| `SCREENSHOT` | No | `0` to disable screenshots, `1` to enable (default: `0`) |
+# Clock out
+curl -X POST http://localhost:3000/automation \
+  -H "Content-Type: application/json" \
+  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"SECRET","action":"out"}'
 
-## Workflow
+# Toggle state
+curl -X POST http://localhost:3000/automation \
+  -H "Content-Type: application/json" \
+  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"SECRET","action":"toggle"}'
 
-The automation performs these steps in order:
+# Check current status (no action field)
+curl -X POST http://localhost:3000/automation \
+  -H "Content-Type: application/json" \
+  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"SECRET"}'
 
-1. **stepLoadBambooHR** - Navigate to the BambooHR instance URL
-2. **stepEnableNormalLogin** - Enable normal login form (add `show-normal-login` class)
-3. **stepLogin** - Fill email and password, submit form
-4. **stepTOTP** - Generate TOTP code locally and submit
+# Health check
+curl http://localhost:3000/health
+```
+
+### Request Body Schema
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `instance` | Yes | BambooHR instance name (e.g., `umbrella` for `https://umbrella.bamboohr.com`) |
+| `user` | Yes | BambooHR email address |
+| `pass` | Yes | BambooHR password |
+| `totp` | Yes | TOTP secret key (Base32 encoded) |
+| `action` | No | Action to perform: `in`, `out`, or `toggle`. If omitted, returns current status. |
+
+### Response Format
+
+**Success (action performed):**
+```json
+{
+  "requestId": "uuid",
+  "action": "in",
+  "state": "clocked-in"
+}
+```
+
+**Validation Error:**
+```json
+{
+  "requestId": "uuid",
+  "errors": ["instance is required", "user is required", "pass is required", "totp is required"]
+}
+```
+
+**Error:**
+```json
+{
+  "requestId": "uuid",
+  "error": "Login form submission failed"
+}
+```
+
+### HTTP Status Codes
+
+| Code | Meaning |
+|------|---------|
+| 200 | Success |
+| 400 | Invalid request body or missing fields |
+| 500 | Automation error |
+| 503 | Server busy (cooldown period) |
+
+### Request Tracing
+
+Include `X-Request-Id` header for request tracing:
+
+```bash
+curl -X POST http://localhost:3000/automation \
+  -H "Content-Type: application/json" \
+  -H "X-Request-Id: my-trace-id" \
+  -d '{"instance":"..."...}'
+```
+
+If not provided, a UUID is generated. All logs include the request ID for tracing.
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `3000` | Server port |
+
+## Automation Workflow
+
+The automation performs these steps:
+
+1. **stepLoadBambooHR** - Navigate to BambooHR and wait for login form
+2. **stepEnableNormalLogin** - Enable normal login form (hides SSO options)
+3. **stepLogin** - Submit email and password
+4. **stepTOTP** - Generate TOTP code using `oathtool` and submit
 5. **stepTrustedBrowser** - Select "Trust this browser" option
-6. **stepTimesheet** - Click timesheet clock-in/out button
+6. **stepCurrentState** - Determine current clocked-in/clocked-out state
+7. **stepTimesheet** - Click clock-in/out button based on action
 
+## TOTP Secret Extraction
 
+Extract TOTP secret from existing authenticator QR code:
 
-## TOTP Generation
-
-The `TOTP_SECRET` environment variable contains the Base32-encoded TOTP secret key.
-
-### Getting a TOTP Secret from Existing Authenticator
-
-If you already use an authenticator app, you can extract the secret from the QR code URL:
 ```
 otpauth://totp/BambooHR:email@example.com?secret=JBSWY3DPEHPK3PXP&issuer=BambooHR
 ```
-Extract the value after `secret=`. (The secret is obviously not mine...)
+
+Use the value after `secret=` in your request payload.
