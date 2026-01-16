@@ -1,7 +1,9 @@
 # BambooHR Time and Attendance Automation
 
 Automates BambooHR login and timesheet clock-in/out via Puppeteer and Express.
+
 The idea is to have an API that will allow you to clock-in or out without an API key.
+
 You would deploy that container somewhere and they be able to issue a curl from anywhere, in anyform (cron? an ESP32 button? Whatever you can imagine?)
 
 Start using `make run` (need docker). Then:
