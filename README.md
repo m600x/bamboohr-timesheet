@@ -1,6 +1,8 @@
 # BambooHR Time and Attendance Automation
 
 Automates BambooHR login and timesheet clock-in/out via Puppeteer and Express.
+The idea is to have an API that will allow you to clock-in or out without an API key.
+You would deploy that container somewhere and they be able to issue a curl from anywhere, in anyform (cron? an ESP32 button? Whatever you can imagine?)
 
 Start using `make run` (need docker). Then:
 ```
@@ -8,6 +10,12 @@ curl -X POST http://localhost:3000/automation \
   -H "Content-Type: application/json" \
   -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"SECRET","action":"in"}'
 ```
+
+Work if:
+- You have a normal login (email/password)
+- You have a TOTP on your account and you retrieved the secret (see below)
+
+**No logs will record your TOTP secret, it only live in memory for the time of the request.**
 
 ## Quick Start
 
