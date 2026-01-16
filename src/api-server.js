@@ -1,4 +1,6 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const { runAutomation } = require('./automation');
 const { log, generateRequestId, runWithRequestId } = require('./utils');
 
@@ -11,6 +13,21 @@ const ctx = {
     lastRequestTime: 0,
     isProcessing: false,
 };
+
+// Load version info at startup
+let versionInfo = {
+    version_timestamp: null,
+    version_hash: null
+};
+
+try {
+    const versionPath = path.join(__dirname, '..', 'version');
+    const versionData = fs.readFileSync(versionPath, 'utf8');
+    versionInfo = JSON.parse(versionData);
+    log(`Version loaded: ${versionInfo.version_hash?.substring(0, 7)} (${versionInfo.version_timestamp})`);
+} catch (err) {
+    log(`Version file not found or invalid, using defaults: ${err.message}`);
+}
 
 const app = express();
 app.use(express.json());
@@ -29,7 +46,11 @@ function validateParameters(body) {
 }
 
 app.get('/health', (req, res) => {
-    res.json({ status: 'boo' });
+    res.json({
+        status: 'ok',
+        version_timestamp: versionInfo.version_timestamp,
+        version_hash: versionInfo.version_hash
+    });
 });
 
 app.post('/automation', async (req, res) => {

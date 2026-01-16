@@ -1,5 +1,13 @@
 const request = require('supertest');
 
+// Mock fs module before importing app
+jest.mock('fs', () => ({
+    readFileSync: jest.fn().mockReturnValue(JSON.stringify({
+        version_timestamp: '2026-01-16 14:32:15.847',
+        version_hash: 'abc123def456'
+    }))
+}));
+
 // Mock the automation module before importing app
 jest.mock('../../src/automation', () => ({
     runAutomation: jest.fn().mockResolvedValue({ action: 'in', state: 'clocked-in' })
@@ -87,10 +95,14 @@ describe('API Server', () => {
     });
 
     describe('GET /health', () => {
-        it('should return health status', async () => {
+        it('should return health status with version info', async () => {
             const response = await request(app).get('/health');
             expect(response.status).toBe(200);
-            expect(response.body).toEqual({ status: 'boo' });
+            expect(response.body).toEqual({
+                status: 'ok',
+                version_timestamp: '2026-01-16 14:32:15.847',
+                version_hash: 'abc123def456'
+            });
         });
     });
 
