@@ -11,6 +11,18 @@ The idea is to have an API that will allow you to clock-in or out without an API
 
 You would deploy that container somewhere and then be able to issue a curl from anywhere, in any form or shape (cron? an ESP32 button? Whatever you can imagine?)
 
+---
+Deployed in an OCI VM by Github Actions, check the code, there's not a single log that keep your data anywhere.
+
+I've deployed it for my own use but feel free: https://hr.m600.fr
+
+Note:
+- 1 request every 5sec max.
+- Error 503 if the service is already doing a request.
+- Set your timeout fairly high (> 30s), don't forget that it's spawning a Chrome browser in the background.
+
+---
+
 Start using `make run` (need docker). Then:
 ```
 curl -X POST http://localhost:3000/automation \
@@ -72,6 +84,9 @@ node src/api-server.js
 ### Endpoints
 
 ```bash
+# Health check
+curl http://localhost:3000/
+
 # Clock in
 curl -X POST http://localhost:3000/automation \
   -H "Content-Type: application/json" \
@@ -91,9 +106,6 @@ curl -X POST http://localhost:3000/automation \
 curl -X POST http://localhost:3000/automation \
   -H "Content-Type: application/json" \
   -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"SECRET"}'
-
-# Health check
-curl http://localhost:3000/health
 ```
 
 ### Request Body Schema

@@ -98,7 +98,7 @@ describe('automation', () => {
             mockPage.url.mockReturnValue('https://bamboohr.com/');
 
             await expect(runAutomation(validPayload)).rejects.toThrow(
-                'Instance [testcompany] failed to load, check if the name is correct'
+                'Instance failed to load, check if the name is correct'
             );
         });
 
@@ -106,7 +106,7 @@ describe('automation', () => {
             mockPage.url.mockReturnValue('https://www.bamboohr.com/');
 
             await expect(runAutomation(validPayload)).rejects.toThrow(
-                'Instance [testcompany] failed to load, check if the name is correct'
+                'Instance failed to load, check if the name is correct'
             );
         });
 
@@ -114,7 +114,7 @@ describe('automation', () => {
             mockPage.waitForSelector.mockRejectedValueOnce(new Error('Timeout'));
 
             await expect(runAutomation(validPayload)).rejects.toThrow(
-                'Instance testcompany failed to load, the form was not found'
+                'Instance failed to load, the form was not found'
             );
         });
 
