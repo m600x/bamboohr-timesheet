@@ -2,6 +2,13 @@
 
 Automates BambooHR login and timesheet clock-in/out via Puppeteer and Express.
 
+Start using `make run` (need docker). Then:
+```
+curl -X POST http://localhost:3000/automation \
+  -H "Content-Type: application/json" \
+  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"SECRET","action":"in"}'
+```
+
 ## Quick Start
 
 ### Docker
@@ -17,19 +24,6 @@ npm install
 node api-server.js
 ```
 
-## Project Structure
-
-```
-bamboohr/
-├── api-server.js      # Express API server
-├── automation.js      # Puppeteer automation logic
-├── utils.js           # Shared utilities
-├── package.json       # Node.js dependencies
-├── Dockerfile         # Docker configuration
-├── docker-compose.yml # Docker Compose configuration
-└── README.md          # This file
-```
-
 ## API Server
 
 ### Endpoints
@@ -38,7 +32,6 @@ bamboohr/
 # Clock in
 curl -X POST http://localhost:3000/automation \
   -H "Content-Type: application/json" \
-  -H "X-Request-Id: my-trace-id" \
   -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"SECRET","action":"in"}'
 
 # Clock out
@@ -124,6 +117,19 @@ If not provided, a UUID is generated. All logs include the request ID for tracin
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `PORT` | `3000` | Server port |
+
+## Project Structure
+
+```
+bamboohr/
+├── api-server.js      # Express API server
+├── automation.js      # Puppeteer automation logic
+├── utils.js           # Shared utilities
+├── package.json       # Node.js dependencies
+├── Dockerfile         # Docker configuration
+├── docker-compose.yml # Docker Compose configuration
+└── README.md          # This file
+```
 
 ## Automation Workflow
 
