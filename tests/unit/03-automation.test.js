@@ -1,13 +1,13 @@
 const puppeteer = require('puppeteer');
-const { generateTOTP } = require('../../utils');
-const { runAutomation } = require('../../automation');
+const { generateTOTP } = require('../../src/utils');
+const { runAutomation } = require('../../src/automation');
 
 // Mock puppeteer
 jest.mock('puppeteer');
 
 // Mock generateTOTP
-jest.mock('../../utils', () => ({
-    ...jest.requireActual('../../utils'),
+jest.mock('../../src/utils', () => ({
+    ...jest.requireActual('../../src/utils'),
     generateTOTP: jest.fn().mockResolvedValue('123456')
 }));
 

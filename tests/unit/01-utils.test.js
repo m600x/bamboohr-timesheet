@@ -1,4 +1,4 @@
-const { generateRequestId, runWithRequestId, log } = require('../../utils');
+const { generateRequestId, runWithRequestId, log } = require('../../src/utils');
 
 describe('utils', () => {
     describe('generateRequestId', () => {

@@ -4,9 +4,7 @@ module.exports = {
     testSequencer: '<rootDir>/tests/testSequencer.js',
     setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
     collectCoverageFrom: [
-        '*.js',
-        '!jest.config.js',
-        '!eslint.config.js'
+        'src/**/*.js'
     ],
     coverageDirectory: 'coverage',
     verbose: true

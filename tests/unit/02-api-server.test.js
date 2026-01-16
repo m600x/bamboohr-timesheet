@@ -1,12 +1,12 @@
 const request = require('supertest');
 
 // Mock the automation module before importing app
-jest.mock('../../automation', () => ({
+jest.mock('../../src/automation', () => ({
     runAutomation: jest.fn().mockResolvedValue({ action: 'in', state: 'clocked-in' })
 }));
 
-const { app, validateParameters } = require('../../api-server');
-const { runAutomation } = require('../../automation');
+const { app, validateParameters } = require('../../src/api-server');
+const { runAutomation } = require('../../src/automation');
 
 describe('API Server', () => {
     beforeEach(() => {

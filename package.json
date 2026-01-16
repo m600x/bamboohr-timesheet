@@ -2,12 +2,12 @@
   "name": "bamboohr-timesheet",
   "version": "1.0.0",
   "description": "Puppeteer to clock in/out on BambooHR",
-  "main": "api-server.js",
+  "main": "src/api-server.js",
   "keywords": ["puppeteer", "time", "attendance", "bamboohr"],
   "author": "M600",
   "license": "MIT",
   "scripts": {
-    "start": "node api-server.js",
+    "start": "node src/api-server.js",
     "lint": "eslint . --format ./eslint-formatter.js",
     "test": "jest --runInBand"
   },
