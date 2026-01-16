@@ -3,6 +3,7 @@
 ![Lint](https://github.com/m600x/bamboohr-timesheet/actions/workflows/lint.yml/badge.svg)
 ![Tests](https://github.com/m600x/bamboohr-timesheet/actions/workflows/tests.yml/badge.svg)
 ![Build](https://github.com/m600x/bamboohr-timesheet/actions/workflows/build.yml/badge.svg)
+![Deploy](https://github.com/m600x/bamboohr-timesheet/actions/workflows/deploy.yml/badge.svg)
 
 Automates BambooHR login and timesheet clock-in/out via Puppeteer and Express.
 
