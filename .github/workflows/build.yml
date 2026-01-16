@@ -74,12 +74,3 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Commit version file
-        if: steps.branch-check.outputs.is_default == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f version
-          git diff --staged --quiet || git commit -m "chore: update version file [skip ci]"
-          git push

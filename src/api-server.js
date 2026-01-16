@@ -6,7 +6,7 @@ const { log, generateRequestId, runWithRequestId } = require('./utils');
 
 const CONFIG = {
     PORT: process.env.PORT || 3000,
-    REQUEST_COOLDOWN: 500,
+    REQUEST_COOLDOWN: 5000,
 };
 
 const ctx = {

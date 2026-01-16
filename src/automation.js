@@ -18,15 +18,15 @@ async function stepLoadBamboohr(page, instance) {
     });
     const landedUrl = page.url();
     if (landedUrl === 'https://bamboohr.com/' || landedUrl === 'https://www.bamboohr.com/') {
-        log(`Instance ${instance} failed to load, redirected to BambooHR home page (${landedUrl})`);
-        throw new Error(`Instance [${instance}] failed to load, check if the name is correct`);
+        log(`Instance failed to load, redirected to BambooHR home page (${landedUrl})`);
+        throw new Error(`Instance failed to load, check if the name is correct`);
     }
     log(`BambooHR loaded`);
     try {
         await page.waitForSelector('form', { timeout: 2000 });
-        log(`Instance ${instance} loaded`);
+        log(`Instance loaded`);
     } catch {
-        throw new Error(`Instance ${instance} failed to load, the form was not found`);
+        throw new Error(`Instance failed to load, the form was not found`);
     }
 }
 
