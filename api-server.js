@@ -92,8 +92,11 @@ app.post('/automation', async (req, res) => {
     });
 });
 
-app.listen(CONFIG.PORT, () => {
-    log(`BambooHR Timesheet API running on port ${CONFIG.PORT}`);
-});
+/* istanbul ignore next */
+if (require.main === module) {
+    app.listen(CONFIG.PORT, () => {
+        log(`BambooHR Timesheet API running on port ${CONFIG.PORT}`);
+    });
+}
 
-module.exports = app;
+module.exports = { app, validateParameters };

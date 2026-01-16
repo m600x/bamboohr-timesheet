@@ -7,7 +7,7 @@ function log(message) {
     const requestId = store ? store.requestId : '-';
     const now = new Date();
     const time = now.toISOString().slice(11, 23);
-    console.error(`[${time}] [${requestId}] ${message}`);
+    console.log(`[${time}] [${requestId}] ${message}`);
 }
 
 function generateTOTP(totpSecret) {

@@ -1,0 +1,27 @@
+name: Tests
+
+on:
+  workflow_run:
+    workflows: [Lint]
+    types: [completed]
+
+jobs:
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm test

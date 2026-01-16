@@ -1,6 +1,7 @@
 # BambooHR Time and Attendance Automation
 
 ![Lint](https://github.com/m600x/bamboohr-timesheet/actions/workflows/lint.yml/badge.svg)
+![CI](https://github.com/m600x/bamboohr-timesheet/actions/workflows/ci.yml/badge.svg)
 ![Build](https://github.com/m600x/bamboohr-timesheet/actions/workflows/build.yml/badge.svg)
 
 Automates BambooHR login and timesheet clock-in/out via Puppeteer and Express.

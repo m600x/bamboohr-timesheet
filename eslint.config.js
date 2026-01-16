@@ -17,5 +17,13 @@ module.exports = defineConfig([
             "no-console": "off",
             "no-unused-vars": "warn"
         }
+    },
+    {
+        files: ["tests/**/*.js"],
+        languageOptions: {
+            globals: {
+                ...globals.jest
+            }
+        }
     }
 ]);
