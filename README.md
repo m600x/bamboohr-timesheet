@@ -1,5 +1,8 @@
 # BambooHR Time and Attendance Automation
 
+![Lint](https://github.com/m600x/bamboohr-timesheet/actions/workflows/lint.yml/badge.svg)
+![Build](https://github.com/m600x/bamboohr-timesheet/actions/workflows/build.yml/badge.svg)
+
 Automates BambooHR login and timesheet clock-in/out via Puppeteer and Express.
 
 The idea is to have an API that will allow you to clock-in or out without an API key.
