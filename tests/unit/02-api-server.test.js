@@ -94,9 +94,9 @@ describe('API Server', () => {
         });
     });
 
-    describe('GET /health', () => {
+    describe('GET /', () => {
         it('should return health status with version info', async () => {
-            const response = await request(app).get('/health');
+            const response = await request(app).get('/');
             expect(response.status).toBe(200);
             expect(response.body).toEqual({
                 status: 'ok',

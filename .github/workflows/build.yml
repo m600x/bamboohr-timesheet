@@ -34,7 +34,6 @@ jobs:
           fi
 
       - name: Generate version file
-        if: steps.branch-check.outputs.is_default == 'true'
         run: |
           echo '{' > version
           echo '  "version_timestamp": "'$(date -u '+%Y-%m-%d %H:%M:%S.%3N')'",' >> version
@@ -81,6 +80,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add version
+          git add -f version
           git diff --staged --quiet || git commit -m "chore: update version file [skip ci]"
           git push
