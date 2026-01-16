@@ -25,17 +25,45 @@ Work if:
 
 ## Quick Start
 
-### Docker
+### Docker (from GitHub Container Registry)
+
+Run directly without cloning the repository:
 
 ```bash
+docker run -d \
+  --name bamboohr-timesheet \
+  -p 3000:3000 \
+  -e TZ=Europe/Paris \
+  ghcr.io/m600x/bamboohr-timesheet:latest
+```
+
+Then use the API:
+
+```bash
+curl -X POST http://localhost:3000/automation \
+  -H "Content-Type: application/json" \
+  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"SECRET","action":"in"}'
+```
+
+To stop and remove:
+
+```bash
+docker stop bamboohr-timesheet && docker rm bamboohr-timesheet
+```
+
+### Docker Compose (local development)
+
+```bash
+git clone https://github.com/m600x/bamboohr-timesheet.git
+cd bamboohr-timesheet
 docker-compose up -d
 ```
 
-### NPM
+### NPM (local development)
 
 ```bash
 npm install
-node api-server.js
+node src/api-server.js
 ```
 
 ## API Server
@@ -135,14 +163,18 @@ If not provided, a UUID is generated. All logs include the request ID for tracin
 ## Project Structure
 
 ```
-bamboohr/
-├── api-server.js      # Express API server
-├── automation.js      # Puppeteer automation logic
-├── utils.js           # Shared utilities
-├── package.json       # Node.js dependencies
-├── Dockerfile         # Docker configuration
-├── docker-compose.yml # Docker Compose configuration
-└── README.md          # This file
+bamboohr-timesheet/
+├── src/
+│   ├── api-server.js      # Express API server
+│   ├── automation.js      # Puppeteer automation logic
+│   └── utils.js           # Shared utilities
+├── tests/
+│   └── unit/              # Unit tests
+├── .github/workflows/     # CI/CD pipelines
+├── Dockerfile             # Docker configuration
+├── docker-compose.yml     # Docker Compose configuration
+├── package.json           # Node.js dependencies
+└── README.md              # This file
 ```
 
 ## Automation Workflow
