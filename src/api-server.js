@@ -40,8 +40,8 @@ function validateParameters(body) {
         errors.push('user is required');
     if (!body.pass)
         errors.push('pass is required');
-    if (!body.totp)
-        errors.push('totp is required');
+    if (!body.totp && !body.totp_secret)
+        errors.push('totp or totp_secret is required');
     return errors;
 }
 
@@ -69,7 +69,7 @@ app.post('/automation', async (req, res) => {
             });
         }
         log(`Required parameters present`);
-        
+
         const action = req.body.action?.toLowerCase() || null;
         const validActions = ['in', 'out', 'toggle'];
         if (action && !validActions.includes(action)) {

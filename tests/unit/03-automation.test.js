@@ -47,7 +47,7 @@ describe('automation', () => {
             instance: 'testcompany',
             user: 'user@example.com',
             pass: 'password123',
-            totp: 'SECRETKEY',
+            totp_secret: 'SECRETKEY',
             action: 'in'
         };
 
@@ -140,17 +140,64 @@ describe('automation', () => {
             await expect(runAutomation(validPayload)).rejects.toThrow('Login invalid');
         });
 
-        it('should generate and submit TOTP code', async () => {
+        it('should generate and submit TOTP code when only totp_secret is provided', async () => {
             mockPage.evaluate.mockResolvedValueOnce()
                 .mockResolvedValueOnce()
                 .mockResolvedValueOnce()
                 .mockResolvedValueOnce('my-info-timesheet-clock-in')
                 .mockResolvedValueOnce();
 
-            await runAutomation(validPayload);
+            await runAutomation({
+                instance: 'testcompany',
+                user: 'user@example.com',
+                pass: 'password123',
+                totp_secret: 'SECRETKEY',
+                action: 'in'
+            });
 
             expect(generateTOTP).toHaveBeenCalledWith('SECRETKEY');
             expect(mockPage.type).toHaveBeenCalledWith('input[name="oneTimeCode"]', '123456');
+            expect(mockPage.keyboard.press).toHaveBeenCalledWith('Enter');
+        });
+
+        it('should use totp directly when provided', async () => {
+            mockPage.evaluate.mockResolvedValueOnce()
+                .mockResolvedValueOnce()
+                .mockResolvedValueOnce()
+                .mockResolvedValueOnce('my-info-timesheet-clock-in')
+                .mockResolvedValueOnce();
+
+            await runAutomation({
+                instance: 'testcompany',
+                user: 'user@example.com',
+                pass: 'password123',
+                totp: '123456',
+                action: 'in'
+            });
+
+            expect(generateTOTP).not.toHaveBeenCalled();
+            expect(mockPage.type).toHaveBeenCalledWith('input[name="oneTimeCode"]', '123456');
+            expect(mockPage.keyboard.press).toHaveBeenCalledWith('Enter');
+        });
+
+        it('should use totp when both totp and totp_secret are provided', async () => {
+            mockPage.evaluate.mockResolvedValueOnce()
+                .mockResolvedValueOnce()
+                .mockResolvedValueOnce()
+                .mockResolvedValueOnce('my-info-timesheet-clock-in')
+                .mockResolvedValueOnce();
+
+            await runAutomation({
+                instance: 'testcompany',
+                user: 'user@example.com',
+                pass: 'password123',
+                totp: '111111',
+                totp_secret: 'SECRETKEY',
+                action: 'in'
+            });
+
+            expect(generateTOTP).not.toHaveBeenCalled();
+            expect(mockPage.type).toHaveBeenCalledWith('input[name="oneTimeCode"]', '111111');
             expect(mockPage.keyboard.press).toHaveBeenCalledWith('Enter');
         });
 

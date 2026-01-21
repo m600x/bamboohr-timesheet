@@ -27,12 +27,13 @@ Start using `make run` (need docker). Then:
 ```
 curl -X POST http://localhost:3000/automation \
   -H "Content-Type: application/json" \
-  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"SECRET","action":"in"}'
+  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"123456","action":"in"}'
 ```
 
 Work if:
 - You have a normal login (email/password)
 - You have a TOTP on your account and you retrieved the secret (see below)
+- Provide either `totp` (pre-generated TOTP code) or `totp_secret` (Base32 secret to generate TOTP)
 
 **No logs will record your TOTP secret, it only live in memory for the time of the request.**
 
@@ -55,7 +56,7 @@ Then use the API:
 ```bash
 curl -X POST http://localhost:3000/automation \
   -H "Content-Type: application/json" \
-  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"SECRET","action":"in"}'
+  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"123456","action":"in"}'
 ```
 
 To stop and remove:
@@ -90,22 +91,22 @@ curl http://localhost:3000/
 # Clock in
 curl -X POST http://localhost:3000/automation \
   -H "Content-Type: application/json" \
-  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"SECRET","action":"in"}'
+  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"123456","action":"in"}'
 
 # Clock out
 curl -X POST http://localhost:3000/automation \
   -H "Content-Type: application/json" \
-  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"SECRET","action":"out"}'
+  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"123456","action":"out"}'
 
 # Toggle state
 curl -X POST http://localhost:3000/automation \
   -H "Content-Type: application/json" \
-  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"SECRET","action":"toggle"}'
+  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"123456","action":"toggle"}'
 
 # Check current status (no action field)
 curl -X POST http://localhost:3000/automation \
   -H "Content-Type: application/json" \
-  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"SECRET"}'
+  -d '{"instance":"your_company","user":"email@example.com","pass":"password","totp":"123456"}'
 ```
 
 ### Request Body Schema
@@ -115,7 +116,7 @@ curl -X POST http://localhost:3000/automation \
 | `instance` | Yes | BambooHR instance name (e.g., `umbrella` for `https://umbrella.bamboohr.com`) |
 | `user` | Yes | BambooHR email address |
 | `pass` | Yes | BambooHR password |
-| `totp` | Yes | TOTP secret key (Base32 encoded) |
+| `totp` or `totp_secret` | Yes* | TOTP secret key (Base32 encoded). Provide at least one. `totp_secret` will be used to generate TOTP code. `totp` is used directly if provided. |
 | `action` | No | Action to perform: `in`, `out`, or `toggle`. If omitted, returns current status. |
 
 ### Response Format
@@ -133,7 +134,7 @@ curl -X POST http://localhost:3000/automation \
 ```json
 {
   "requestId": "uuid",
-  "errors": ["instance is required", "user is required", "pass is required", "totp is required"]
+  "errors": ["instance is required", "user is required", "pass is required", "totp or totp_secret is required"]
 }
 ```
 

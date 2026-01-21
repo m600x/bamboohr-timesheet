@@ -61,8 +61,9 @@ async function stepLogin(page, user, pass) {
     }
 }
 
-async function stepTOTP(page, totpSecret) {
-    const totpCode = await generateTOTP(totpSecret);
+async function stepTOTP(page, mustCreate, payload) {
+    const totpCode = mustCreate ? await generateTOTP(payload.totp_secret) : payload.totp;
+
     await page.type(SELECTORS.TOTP_INPUT, totpCode);
     const currentUrl = page.url();
     await page.keyboard.press('Enter');
@@ -123,6 +124,8 @@ async function runAutomation(payload) {
 
     log('Starting automation');
 
+    const mustCreate = payload.totp_secret && !payload.totp;
+
     try {
         browser = await puppeteer.launch({
             headless: 'new',
@@ -135,7 +138,7 @@ async function runAutomation(payload) {
         await stepLoadBamboohr(page, payload.instance);
         await stepEnableNormalLogin(page);
         await stepLogin(page, payload.user, payload.pass);
-        await stepTOTP(page, payload.totp);
+        await stepTOTP(page, mustCreate, payload);
         await stepTrustedBrowser(page);
 
         const currentState = await stepCurrentState(page);

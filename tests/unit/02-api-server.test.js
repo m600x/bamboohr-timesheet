@@ -27,7 +27,7 @@ describe('API Server', () => {
                 instance: 'company',
                 user: 'user@example.com',
                 pass: 'password123',
-                totp: 'SECRET'
+                totp_secret: 'SECRET'
             };
             const errors = validateParameters(body);
             expect(errors).toEqual([]);
@@ -37,7 +37,7 @@ describe('API Server', () => {
             const body = {
                 user: 'user@example.com',
                 pass: 'password123',
-                totp: 'SECRET'
+                totp_secret: 'SECRET'
             };
             const errors = validateParameters(body);
             expect(errors).toContain('instance is required');
@@ -47,7 +47,7 @@ describe('API Server', () => {
             const body = {
                 instance: 'company',
                 pass: 'password123',
-                totp: 'SECRET'
+                totp_secret: 'SECRET'
             };
             const errors = validateParameters(body);
             expect(errors).toContain('user is required');
@@ -57,20 +57,20 @@ describe('API Server', () => {
             const body = {
                 instance: 'company',
                 user: 'user@example.com',
-                totp: 'SECRET'
+                totp_secret: 'SECRET'
             };
             const errors = validateParameters(body);
             expect(errors).toContain('pass is required');
         });
 
-        it('should return error when totp is missing', () => {
+        it('should return error when totp_secret is missing', () => {
             const body = {
                 instance: 'company',
                 user: 'user@example.com',
                 pass: 'password123'
             };
             const errors = validateParameters(body);
-            expect(errors).toContain('totp is required');
+            expect(errors).toContain('totp or totp_secret is required');
         });
 
         it('should return all errors when all fields are missing', () => {
@@ -79,7 +79,7 @@ describe('API Server', () => {
             expect(errors).toContain('instance is required');
             expect(errors).toContain('user is required');
             expect(errors).toContain('pass is required');
-            expect(errors).toContain('totp is required');
+            expect(errors).toContain('totp or totp_secret is required');
         });
 
         it('should return errors for empty string values', () => {
@@ -87,10 +87,32 @@ describe('API Server', () => {
                 instance: '',
                 user: '',
                 pass: '',
-                totp: ''
+                totp_secret: ''
             };
             const errors = validateParameters(body);
             expect(errors).toHaveLength(4);
+        });
+
+        it('should pass validation when only totp is present', () => {
+            const body = {
+                instance: 'company',
+                user: 'user@example.com',
+                pass: 'password123',
+                totp: 'SECRET'
+            };
+            const errors = validateParameters(body);
+            expect(errors).toEqual([]);
+        });
+
+        it('should pass validation when only totp_secret is present', () => {
+            const body = {
+                instance: 'company',
+                user: 'user@example.com',
+                pass: 'password123',
+                totp_secret: 'SECRET'
+            };
+            const errors = validateParameters(body);
+            expect(errors).toEqual([]);
         });
     });
 
@@ -134,7 +156,7 @@ describe('API Server', () => {
                     instance: 'company',
                     user: 'user@example.com',
                     pass: 'password123',
-                    totp: 'SECRET',
+                    totp_secret: 'SECRET',
                     action: 'invalid'
                 });
 
@@ -149,7 +171,7 @@ describe('API Server', () => {
                     instance: 'company',
                     user: 'user@example.com',
                     pass: 'password123',
-                    totp: 'SECRET',
+                    totp_secret: 'SECRET',
                     action: 'in'
                 });
 
@@ -173,7 +195,7 @@ describe('API Server', () => {
                     instance: 'company',
                     user: 'user@example.com',
                     pass: 'password123',
-                    totp: 'SECRET',
+                    totp_secret: 'SECRET',
                     action: 'OUT'
                 });
 
